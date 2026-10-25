@@ -9,6 +9,15 @@ function paint(){const x=50+progress*660;$('piece').setAttribute('transform',`tr
 function resetCycle(){progress=0;detected=false;robotDone=false;inspected=false}
 function tick(ts){if(!last)last=ts;let dt=Math.min((ts-last)/1000,.08);last=ts;if(running&&!failed){let old=progress;progress+=dt*.145*speed[$('speed').value];if(old<.18&&progress>=.18){detected=true;event('S1 detectou a peça; CLP autorizou a etapa.')}if(!robotDone&&progress>=.40){robotDone=true;event('Robô R1 executou manipulação ilustrativa.')}if(!inspected&&progress>=.70){inspected=true;event('V1 executou inspeção visual ilustrativa.')}if(progress>=1){cycles++;const bad=cycles%5===0;if(bad){rejected++;event('Peça '+cycles+' classificada como rejeitada (regra demonstrativa).')}else{produced++;event('Peça '+cycles+' aprovada e enviada à saída.')}resetCycle()}}paint();requestAnimationFrame(tick)}
 $('start').onclick=()=>{if(failed){event('Corrija a falha antes de iniciar.');return}if(!running){running=true;event('CLP virtual: ciclo automático iniciado.')}paint()};$('pause').onclick=()=>{if(running){running=false;event('Operação pausada pelo usuário.')}paint()};$('reset').onclick=()=>{running=false;failed=false;cycles=produced=rejected=0;resetCycle();event('Sistema reiniciado; contadores zerados.');paint()};$('fault').onclick=()=>{failed=true;running=false;event('ALARME: falha simulada; operação interrompida.');paint()};$('repair').onclick=()=>{failed=false;event('Falha corrigida. Sistema liberado para novo início.');paint()};$('speed').oninput=()=>{$('speedLabel').textContent=names[$('speed').value]};paint();requestAnimationFrame(tick);
-// Mantém o endereço visível sem os parâmetros UTM de compartilhamento.
-if (location.search) { const cleanUrl = new URL(location.href); for (const key of [...cleanUrl.searchParams.keys()]) { if (key.startsWith('utm_')) cleanUrl.searchParams.delete(key); } if (cleanUrl.href !== location.href) history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search + cleanUrl.hash); }
-</script></body></html>
+</script><script>
+const voltarMapa=document.querySelector('header a');
+if(voltarMapa){voltarMapa.href='./mapa.html';voltarMapa.textContent='← Voltar ao mapa';}
+const passo=document.createElement('div');
+passo.textContent='ETAPA 03 / 03 · BRAÇO ROBÓTICO + ESTEIRA NA MESMA CÉLULA';
+passo.style.cssText='font-size:12px;letter-spacing:1.5px;color:#ffb46b;font-weight:800;margin-bottom:18px';
+document.querySelector('main .top')?.before(passo);
+</script><style>
+body{background:#20272d}
+.controls button.primary{background:#ea8732!important;color:#191f24!important;border-color:#ffb363!important;font-weight:800}
+.controls button.primary:hover{background:#ff9e47!important}
+</style></body></html>
